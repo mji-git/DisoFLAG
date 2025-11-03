@@ -181,9 +181,9 @@ def mask_padding(res_mask,max_seq_length):
 	return np.array(out_list)
 
 
-def data_2_samples(args, data_file_name, is_slice):
+def data_2_samples(args, data_file_name, is_slice, embedding_file):
 
-	seq_id,seq,seq_label_IDP,seq_label_F1,seq_label_F2,seq_label_F3,seq_label_F4,seq_label_F5,seq_label_F6,seq_T5_feature = file_2_data(data_file_name)
+	seq_id,seq,seq_label_IDP,seq_label_F1,seq_label_F2,seq_label_F3,seq_label_F4,seq_label_F5,seq_label_F6,seq_T5_feature = file_2_data(data_file_name, T5_embedding_path=embedding_file)
 
 	# 标签处理
 	res_mask_0 = residue_mask(seq_label_IDP)   

@@ -24,7 +24,7 @@ def load_file_2_data(file_path):
 	# print("load_file: ",file_path,"    data length: ",len(load_data))  
 	return load_data
 
-def file_2_data(data_file_name):
+def file_2_data(data_file_name, T5_embedding_path, verbose=False):
 	seq_id = []     	
 	seq = []        	
 
@@ -42,7 +42,7 @@ def file_2_data(data_file_name):
 	seq_BERT_feature = []     
 	seq_IDP_feature = []     
 
- 	data_list = load_file_2_data(data_file_name)
+	data_list = load_file_2_data(data_file_name)
 
 	for i in range(len(data_list)):
 		one_seq_id = data_list[i][0][1:].replace('\r', '')
@@ -61,13 +61,17 @@ def file_2_data(data_file_name):
 		seq_label_F6.append(['1']*len(data_list[i][1].replace('\r', '')))      
 
 		# embeddings
-		T5_embedding_path = './temp/embeddings/T5/'
-		
-		T5_feature_file = T5_embedding_path + one_seq_id + '.npy'
+		T5_feature_file = os.path.join(T5_embedding_path, one_seq_id + '.npy')
 		
 		one_T5_vec = np.load(T5_feature_file,allow_pickle=True)
 		one_T5_vec = one_T5_vec.reshape(len(one_T5_vec),-1)
 		seq_T5_feature.append(one_T5_vec)  
+
+	if verbose:
+		print("seq_label_IDP':")
+		for x in ["seq_id", "seq", "seq_label_IDP", "seq_label_F1", "seq_label_F2", "seq_label_F3", "seq_label_F4", "seq_label_F5", "seq_label_F6", "seq_T5_feature"]:
+			xvar = locals()[x]
+			print(x, [len(xvar[i]) for i in range(len(xvar))])
 
 	return np.array(seq_id),np.array(seq),np.array(seq_label_IDP),np.array(seq_label_F1),np.array(seq_label_F2),np.array(seq_label_F3),np.array(seq_label_F4),np.array(seq_label_F5),np.array(seq_label_F6),np.array(seq_T5_feature)
 

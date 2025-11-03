@@ -15,18 +15,19 @@ from model import Seq2FUN
 import sys
 from evaluator import write_2_file 
 
-def FLAG_model_running(input_data_file, output_file_name, output_type):
+def FLAG_model_running(input_data_file, output_file_name, embedding_file, output_type):
 	args = Args_config()
 
 	test_data = data_2_samples(args = args, 
 								data_file_name = input_data_file,
-								is_slice = True)
+								is_slice = True,
+								embedding_file=embedding_file)
 
 	for root, dirs, files in os.walk(args.model_path):
 		for one_file in files:
 			model_file = args.model_path+'/'+one_file
 			# print("model_file:",model_file)	
-	model = t.load(model_file, map_location='cpu')
+	model = t.load(model_file, map_location='cpu', weights_only=False)
 	# print("Model : ------",model)
 	model.eval()
 

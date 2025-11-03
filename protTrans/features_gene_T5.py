@@ -40,8 +40,9 @@ def data_feature_2_file(data, feature_path):
 		input_sequences.append(sequences_Example[i])
 		
 		seq_name = data[i][0].replace('>','') 
+		out_name = os.path.join(feature_path, seq_name+'.npy')
 		# 
-		if not os.path.exists(feature_path + seq_name+'.npy') and len(sequences_Example[i]) <= 2000:
+		if not os.path.exists(out_name) and len(sequences_Example[i]) <= 2000:
 		# if not os.path.exists(feature_path + seq_name+'.npy'):
 
 			features = protT5(model_path,input_sequences)
@@ -50,7 +51,7 @@ def data_feature_2_file(data, feature_path):
 			if not os.path.isdir(feature_path):
 				os.makedirs(feature_path)
 			
-			np.save(feature_path + seq_name+'.npy',features[0])
+			np.save(out_name, features[0])
 			# print("finish write....",seq_name)
 		# else:
 			# print("pass exists:",feature_path + seq_name+'.npy')

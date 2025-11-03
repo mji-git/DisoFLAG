@@ -28,18 +28,21 @@ if __name__ == '__main__':
     # print(args.output)
 
     input_data_file = args.input
-    output_results_path = './temp/results/'
+    name = input_data_file.split("/")[-1].split(".")[0]
+    print("Processing name:", name)
+
+    output_results_path = f'./temp/results/{name}'
     if not os.path.isdir(output_results_path):
     	os.makedirs(output_results_path)
 
     if args.output == 'p':
-    	output_file_name = output_results_path+'DisoFLAG_prediction_propensity.txt'
+    	output_file_name = os.path.join(output_results_path, 'DisoFLAG_prediction_propensity.txt')
     elif args.output == 'b':
-    	output_file_name = output_results_path+'DisoFLAG_prediction_binary.txt'
+    	output_file_name = os.path.join(output_results_path, 'DisoFLAG_prediction_binary.txt')
 
     output_type = args.output
-
-    FLAG_model_running(input_data_file, output_file_name, output_type)
+    embedding_file = f'./temp/embeddings/T5/{name}'
+    FLAG_model_running(input_data_file, output_file_name, embedding_file, output_type)
 
 
 
