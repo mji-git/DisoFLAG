@@ -111,6 +111,9 @@ def write_2_file(data_file, data_samples, data_batches, IDR_probs, PB_probs, DB_
 
 	
 	write_file = open(file_name,"w")
+	np_p_filename = file_name.replace(".txt", ".npy")
+	np_p = np.array([pred_final_ordered_0, pred_final_ordered_1, pred_final_ordered_2, pred_final_ordered_3, pred_final_ordered_4, pred_final_ordered_5, pred_final_ordered_6])
+	np.save(np_p_filename, np_p)
 
 	for i in range(len(data_file)):
 		write_file.write(data_file[i][0]+'\n')
