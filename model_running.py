@@ -23,6 +23,9 @@ def FLAG_model_running(input_data_file, output_file_name, embedding_file, output
 								is_slice = True,
 								embedding_file=embedding_file)
 
+	print("loaded test data:")
+	sys.stdout.flush()
+
 	for root, dirs, files in os.walk(args.model_path):
 		for one_file in files:
 			model_file = args.model_path+'/'+one_file
@@ -31,7 +34,8 @@ def FLAG_model_running(input_data_file, output_file_name, embedding_file, output
 	# print("Model : ------",model)
 	model.eval()
 
-
+	print("loaded model:")
+	sys.stdout.flush()
 
 	if len(test_data) < args.batch_size:
 		input_data = []
@@ -45,6 +49,9 @@ def FLAG_model_running(input_data_file, output_file_name, embedding_file, output
 
 	test_batches = Batches_data(test_data, args.batch_size, is_train=False)	
 
+	print("running model:")
+	sys.stdout.flush()
+
 	IDR_probs = []
 	PB_probs = []
 	DB_probs = []
@@ -52,7 +59,11 @@ def FLAG_model_running(input_data_file, output_file_name, embedding_file, output
 	IB_probs = []
 	LB_probs = []
 	Link_probs  = []
+	print(len(test_batches))
+	sys.stdout.flush()
 	for t_batch in test_batches:   #一个batch
+		print("running test batches", len(IDR_probs))
+		sys.stdout.flush()
 		t_input_featues = t.tensor(np.array(t_batch.seq_T5_feature))
 		# seq_mask
 		one_seq_mask = t.tensor(np.array(t_batch.seq_mask), dtype=t.float32)

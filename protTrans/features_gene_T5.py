@@ -8,7 +8,7 @@ import os
 from protT5 import protT5
 
 
-def load_file_2_data(file_path):
+def load_file_2_data(file_path, reverse=False):
 	loadfile = open(file_path,"r") 	
 	load_f = []
 	line_id = 1
@@ -23,6 +23,11 @@ def load_file_2_data(file_path):
 		if i % 2 == 0:
 			load_data.append(load_f[i:i+2])    #one data:  [0]--id  [1]--seq   
 	# print("load_file: ",file_path,"    data length: ",len(load_data))  
+
+	if reverse:
+		print("Reversing")
+		load_data.reverse()
+	print("First item:", load_data[0][1])
 	return load_data
 
 def data_feature_2_file(data, feature_path):
@@ -41,7 +46,13 @@ def data_feature_2_file(data, feature_path):
 		
 		seq_name = data[i][0].replace('>','') 
 		out_name = os.path.join(feature_path, seq_name+'.npy')
-		# 
+		"""
+		next_seq_name = data[i+20][0].replace('>','')
+		next_out_name = os.path.join(feature_path, next_seq_name+'.npy')
+		if os.path.exists(next_out_name):
+			print("next out name exists, assuming another process is running, terminating 1 early before:", out_name, next_out_name)
+			return
+		"""
 		if not os.path.exists(out_name) and len(sequences_Example[i]) <= 2000:
 		# if not os.path.exists(feature_path + seq_name+'.npy'):
 
@@ -53,9 +64,8 @@ def data_feature_2_file(data, feature_path):
 			
 			np.save(out_name, features[0])
 			# print("finish write....",seq_name)
-		# else:
-			# print("pass exists:",feature_path + seq_name+'.npy')
-
+		else:
+			print("pass likely exists:", out_name)
 
 
 def get_embedding_T5(data_file,feature_path):
