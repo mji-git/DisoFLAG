@@ -6,6 +6,8 @@
 import numpy as np 
 import os
 from protT5 import protT5
+import torch
+from transformers import T5Tokenizer, T5Model, T5EncoderModel
 
 
 def load_file_2_data(file_path, reverse=False):
@@ -30,21 +32,24 @@ def load_file_2_data(file_path, reverse=False):
 	print("First item:", load_data[0][1])
 	return load_data
 
-def data_feature_2_file(data, feature_path):
 
-	
+def data_feature_2_file(data, feature_path):
 	sequences_Example = []
 	for i in range(len(data)):
 		sequences_Example.append(data[i][1])
 
 	model_path = "./protTrans/prot_t5_xl_uniref50"
+	tokenizer = T5Tokenizer.from_pretrained(model_path, do_lower_case=False)
+	model = T5EncoderModel.from_pretrained(model_path)
+	device = torch.device('cuda')
+	model = model.to(device)
+	model = model.eval()
 
 	for i in range(len(sequences_Example)):
-
 		input_sequences = []
 		input_sequences.append(sequences_Example[i])
-		
-		seq_name = data[i][0].replace('>','') 
+
+		seq_name = data[i][0].replace('>','')
 		out_name = os.path.join(feature_path, seq_name+'.npy')
 		"""
 		next_seq_name = data[i+20][0].replace('>','')
@@ -56,7 +61,8 @@ def data_feature_2_file(data, feature_path):
 		if not os.path.exists(out_name) and len(sequences_Example[i]) <= 2000:
 		# if not os.path.exists(feature_path + seq_name+'.npy'):
 
-			features = protT5(model_path,input_sequences)
+			#features = protT5(model_path,input_sequences)
+			features = protT5(tokenizer, model, device, input_sequences)
 			# print("success one:",features)
 
 			if not os.path.isdir(feature_path):
@@ -65,7 +71,7 @@ def data_feature_2_file(data, feature_path):
 			np.save(out_name, features[0])
 			# print("finish write....",seq_name)
 		else:
-			print("pass likely exists:", out_name)
+			raise ValueError(f"Sequence {seq_name} likely already exists in {out_name}")
 
 
 def get_embedding_T5(data_file,feature_path):

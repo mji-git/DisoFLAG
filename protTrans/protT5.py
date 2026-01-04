@@ -4,7 +4,6 @@
 # @Last Modified by:   Yihe Pang
 # @Last Modified time: 2023-06-14 22:39:30
 import torch
-from transformers import T5Tokenizer, T5Model, T5EncoderModel
 import re
 import os
 import numpy as np
@@ -15,31 +14,18 @@ logging.set_verbosity_error()
 
 
 
-def protT5(model_path,sequences_Example):
-	"""
-		input: 
-		model_path = "Rostlab/prot_bert"
-		sequences_Example = ["A E T C Z A O","S K T Z P"]
-	"""
+def protT5(tokenizer, model, device, sequences_Example):
 	sequences_Example = [' '.join(sequences_Example[0])]
 
 	# print("T5 get input :",sequences_Example)
 
-	tokenizer = T5Tokenizer.from_pretrained(model_path, do_lower_case=False)
-
-	model = T5EncoderModel.from_pretrained(model_path)
 	gc.collect()
 
 	# device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-	device = torch.device('cpu')
-
+	# device = torch.device('cpu')
 
 	# if torch.cuda.device_count() > 1:
 	# 	model = torch.nn.DataParallel(model)
-
-	model = model.to(device)
-		
-	model = model.eval()
 
 	sequences_Example = [re.sub(r"[UZOB]", "X", sequence) for sequence in sequences_Example]
 
